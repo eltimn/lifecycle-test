@@ -17,13 +17,13 @@ package lifecyclespecs {
     with MongoId[LifecycleTest]
   {
     def meta = LifecycleTest
-    
+
     object str extends StringField(this, 12) {
       override def defaultValue = "str"
     }
-    
+
     var x = "x"
-    
+
     override def afterSave = {
       x = "afterSave"
       str("afterSave")
@@ -39,11 +39,10 @@ object LifecycleSpecs extends Specification {
     val mongoHost = MongoHost()
     MongoDB.defineDb(DefaultMongoIdentifier, MongoAddress(mongoHost, "lifecycle_specs"))
   }
-  
   "Lifecycle" should {
     "handle afterSave" in {
       import lifecyclespecs._
-      
+
       val lc = LifecycleTest.createRecord
       lc.str.value must_== "str"
       lc.x must_== "x"
@@ -52,7 +51,7 @@ object LifecycleSpecs extends Specification {
       lc.x must_== "afterSave"
     }
   }
-  
+
   doAfterSpec {
     MongoDB.use {
       db => db.dropDatabase
